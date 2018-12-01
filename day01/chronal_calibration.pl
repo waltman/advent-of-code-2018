@@ -18,7 +18,7 @@ my %seen;
 my $i = 0;
 while (1) {
     $freq += $deltas[$i];
-    if (defined $seen{$freq}) {
+    if (exists $seen{$freq}) {
 	say "$freq is first seen twice";
 	last;
     }
