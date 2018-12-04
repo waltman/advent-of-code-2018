@@ -32,7 +32,7 @@ for record in records:
                 guard_asleep[minute] = defaultdict(int)
             guard_asleep[minute][guard] += 1
 
-# fine best guard
+# find best guard
 best_guard = -1
 best_time = -1
 for guard, asleep in tot_asleep.items():
