@@ -3,7 +3,6 @@ from sys import argv
 from collections import defaultdict
 
 remaining = set()
-done = set()
 parents = defaultdict(set)
 children = defaultdict(set)
 
