@@ -9,10 +9,7 @@ def walk_tree(data, idx):
         new_idx, child_sum = walk_tree(data, idx)
         md_sum += child_sum
         idx = new_idx
-    md_sum += sum(data[idx:idx+num_metadata])
-    idx += num_metadata
-    return idx, md_sum
-    
+    return idx+num_metadata, md_sum+sum(data[idx:idx+num_metadata])
 
 filename = argv[1]
 with open(filename) as f:
