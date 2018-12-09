@@ -9,6 +9,8 @@ score = [0] * num_players
 idx = 1
 player = 0
 for marble in range(2, num_marbles+1):
+    if marble % 100000 == 0:
+        print('marble =', marble)
     if marble % 23 == 0:
         idx = (idx - 7) % len(circle)
         score[player] += marble + circle.pop(idx)
