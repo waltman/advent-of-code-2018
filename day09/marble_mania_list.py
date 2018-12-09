@@ -2,10 +2,10 @@
 from sys import argv
 
 class Node:
-    def __init__(self, val):
+    def __init__(self, val, next_node = None, prev_node = None):
         self.val = val
-        self.next_node = None
-        self.prev_node = None
+        self.next_node = next_node
+        self.prev_node = prev_node
 
 num_players = int(argv[1])
 num_marbles = int(argv[2])
@@ -36,9 +36,7 @@ for marble in range(1, num_marbles+1):
     else:
         idx = idx.next_node
         next_idx = idx.next_node
-        node = Node(marble)
-        node.next_node = next_idx
-        node.prev_node = idx
+        node = Node(marble, next_idx, idx)
         idx.next_node = node
         next_idx.prev_node = node
         idx = node
