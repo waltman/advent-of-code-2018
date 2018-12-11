@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
     const int DIM = 300;
     array2d<int> grid(DIM, DIM);
 
-    for (int x = 0; x < DIM-2; x++)
-        for (int y = 0; y < DIM-2; y++)
+    for (int x = 0; x < DIM; x++)
+        for (int y = 0; y < DIM; y++)
             grid(x, y) = power_level(x, y, serial);
             
     int best_sum = -1e6;
