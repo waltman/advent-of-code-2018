@@ -101,7 +101,7 @@ array2d<T>::array2d(const array2d &rhs) {
         _x_dim = rhs._x_dim;
         _y_dim = rhs._y_dim;
         _data = new T[_x_dim * _y_dim];
-        memcpy(_data, rhs.data, x_dim * y_dim * sizeof(T));
+        memcpy(_data, rhs.data, _x_dim * _y_dim * sizeof(T));
 }
 
 // allow sending an array2d to a stream, using matlab's formatting
