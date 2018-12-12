@@ -29,3 +29,23 @@ for i in range(len(plants)):
     if plants[i] == '#':
         score += i + offset
 print('part1:', score)
+
+# let's see if there's a pattern...
+plants = '.' * 100 + init_state + '.' * 1000
+offset = -100
+for gen in range(1,120):
+    new_plants = '..'
+    for i in range(2, len(plants)-2):
+        pattern = plants[i-2:i+3]
+        new_plants += rules.get(pattern, '.')
+    plants = new_plants + '..'
+    score = 0
+    for i in range(len(plants)):
+        if plants[i] == '#':
+            score += i + offset
+    print(gen, score)
+    if gen > 114:
+        predict = 10600 + 80 * (gen - 114)
+        print(predict)
+
+print('part2:', 10600 + 80 * (50000000000 - 114))
