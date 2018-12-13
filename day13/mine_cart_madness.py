@@ -39,4 +39,6 @@ for y in range(len(track)):
 tick = 1
 while True:
     for cart in carts:
-        
+        print(cart)
+    break
+
