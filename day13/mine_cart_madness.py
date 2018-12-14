@@ -20,9 +20,10 @@ class Cart:
         self.y = y
         self.d = d
         self.t = 0
+        self.crashed = False
 
     def __repr__(self):
-        return f'x: {self.x}, y: {self.y}, d: {self.d}, t: {self.t}'
+        return f'x: {self.x}, y: {self.y}, d: {self.d}, t: {self.t}, crashed: {self.crashed}'
 
     def move(self):
         if self.d == 'u':
@@ -58,6 +59,11 @@ class Cart:
         elif self.t == 2:
             self.turn_right()
         self.t = (self.t+1) % 3
+
+    def crash(self):
+        self.crashed = True
+        self.x = 999999999
+        self.y = 999999999
         
 
 # parse input
@@ -84,8 +90,7 @@ for y in range(len(track)):
             carts.append(Cart(x, y, 'l'))
             track[y] = track[y][:x] + '-' + track[y][x+1:]
 
-# for t in track:
-#     print(t)
+remaining = len(carts)
 
 for c in sorted(carts, key=lambda cart: (cart.y,cart.x)):
     print(c)
@@ -96,8 +101,9 @@ done = False
 while not done:
     # move and turn carts
     k = 0
-#     for cart in carts:
     for cart in sorted(carts, key=lambda c: (c.y,c.x)):
+        if cart.crashed:
+            continue
         cart.move()
         loc = track[cart.y][cart.x]
         if loc == '/' or loc == '\\':
@@ -110,11 +116,25 @@ while not done:
         k += 1
         # check for collisions
         for i in range(len(carts)-1):
+            if carts[i].crashed:
+                continue
             for j in range(i+1, len(carts)):
+                if carts[j].crashed:
+                    continue
                 if carts[i].x == carts[j].x and carts[i].y == carts[j].y:
-                    print(f'part1: {carts[i].x},{carts[i].y}, tick={tick}, i={i}, j={j}')
-                    done = True
+                    print(f'crash: {carts[i].x},{carts[i].y}, tick={tick}, i={i}, j={j}')
+                    carts[i].crash()
+                    carts[j].crash()
+                    remaining -= 2
                     break
+    if remaining == 1:
+        for cart in carts:
+            if not cart.crashed:
+                print(f'part2: {cart.x},{cart.y}, tick={tick}')
+                break
+        done = True
+    if remaining == 0:
+        print(f'no more cars left, tick={tick}')
+        done = True
     tick += 1
-
             
