@@ -56,53 +56,55 @@ class Unit:
         visited = set()
         if grid[self.row-1][self.col] == '.':
             queue.append((self.row-1,self.col, 'u', 1))
-            visited.add((self.row-1,self.col,'u'))
+            visited.add((self.row-1,self.col))
         if grid[self.row][self.col-1] == '.':
             queue.append((self.row,self.col-1, 'l', 1))
-            visited.add((self.row,self.col-1,'l'))
+            visited.add((self.row,self.col-1))
         if grid[self.row][self.col+1] == '.':
             queue.append((self.row,self.col+1, 'r', 1))
-            visited.add((self.row,self.col+1,'r'))
+            visited.add((self.row,self.col+1))
         if grid[self.row+1][self.col] == '.':
             queue.append((self.row+1,self.col, 'd', 1))
-            visited.add((self.row+1,self.col,'d'))
+            visited.add((self.row+1,self.col))
 
         # loop until we find a point in in_range, or we hit the end
         # of the queue
         res = ' '
-        dir_score = {
-            'u': 4,
-            'l': 3,
-            'r': 2,
-            'd': 1,
-            ' ': 0
-        }
+        # dir_score = {
+        #     'u': 4,
+        #     'l': 3,
+        #     'r': 2,
+        #     'd': 1,
+        #     ' ': 0
+        # }
         best_dist = 999999
+        best_loc = (99999,99999)
         while len(queue) > 0:
             r, c, d, dist = queue.popleft()
             # if dist > best_dist:
             #     break
             if dist > best_dist:
                 continue
-            if (r,c) in in_range and dir_score[d] > dir_score[res]:
+            if (r,c) in in_range and (r, c) < best_loc:
                 # if res != ' ':
                 #     print('override', r, c, d, dist)
                 # print('override', r, c, d, dist)
                 res = d
                 best_dist = dist
+                best_loc = (r, c)
             else:
-                if grid[r-1][c] == '.' and (r-1,c,d) not in visited:
+                if grid[r-1][c] == '.' and (r-1,c) not in visited:
                     queue.append((r-1,c,d,dist+1))
-                    visited.add((r-1,c,d))
-                if grid[r][c-1] == '.' and (r,c-1,d) not in visited:
+                    visited.add((r-1,c))
+                if grid[r][c-1] == '.' and (r,c-1) not in visited:
                     queue.append((r,c-1,d,dist+1))
-                    visited.add((r,c-1,d))
-                if grid[r][c+1] == '.' and (r,c+1,d) not in visited:
+                    visited.add((r,c-1))
+                if grid[r][c+1] == '.' and (r,c+1) not in visited:
                     queue.append((r,c+1,d,dist+1))
-                    visited.add((r,c+1,d))
-                if grid[r+1][c] == '.' and (r+1,c,d) not in visited:
+                    visited.add((r,c+1))
+                if grid[r+1][c] == '.' and (r+1,c) not in visited:
                     queue.append((r+1,c,d,dist+1))
-                    visited.add((r+1,c,d))
+                    visited.add((r+1,c))
 
 #        print('returning', res)
         return res
@@ -265,6 +267,8 @@ while not done:
 if num_elves == 0:
 #    print('part1', score(goblins, rnd-2))
     print('part1', score(goblins, rnd-1))
+    print('part1', score(goblins, rnd))
 else:
 #    print('part1', score(elves, rnd-2))
     print('part1', score(elves, rnd-1))
+    print('part1', score(elves, rnd))
