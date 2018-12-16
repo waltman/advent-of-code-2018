@@ -91,12 +91,55 @@ cmds = [addr, addi,
         gtir, gtri, gtrr,
         eqir, eqri, eqrr]
 
-regs = [3, 2, 1, 1]
-cnt = 0
-for i in range(len(cmds)):
-    cmd = cmds[i]
-    r2 = cmd(regs, 2, 1, 2)
-    print(i, regs, r2, r2 == [3,2,2,1])
-    if r2 == [3,2,2,1]:
-        cnt += 1
-print(cnt)
+# regs = [3, 2, 1, 1]
+# cnt = 0
+# for i in range(len(cmds)):
+#     cmd = cmds[i]
+#     r2 = cmd(regs, 2, 1, 2)
+#     print(i, regs, r2, r2 == [3,2,2,1])
+#     if r2 == [3,2,2,1]:
+#         cnt += 1
+# print(cnt)
+
+# parse the input
+filename = argv[1]
+before = []
+vals = []
+after = []
+state = 1
+
+with open(filename) as f:
+    for line in f:
+        line.rstrip()
+        if state == 1:
+            m = re.match('Before:.*(\d+), (\d+), (\d+), (\d+)', line)
+            if m:
+                before.append([int(x) for x in [m.group(1), m.group(2), m.group(3), m.group(4)]])
+                state = 2
+            else:
+                state = 5
+        elif state == 2:
+            vals.append([int(x) for x in line.split(' ')])
+            state = 3
+        elif state == 3:
+            m = re.match('After:.*(\d+), (\d+), (\d+), (\d+)', line)
+            after.append([int(x) for x in [m.group(1), m.group(2), m.group(3), m.group(4)]])
+            state = 4
+        elif state == 4:
+            state = 1
+        elif state == 5:
+            pass
+
+tot = 0
+print(len(before))
+for i in range(len(before)):
+    a,b,c = vals[i][1:]
+#    print(a,b,c)
+    cnt = 0
+    for cmd in cmds:
+        r2 = cmd(before[i], a, b, c)
+        if r2 == after[i]:
+            cnt += 1
+    if cnt >= 3:
+        tot += 1
+print('part1', tot)
