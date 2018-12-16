@@ -82,7 +82,9 @@ class Unit:
             r, c, d, dist = queue.popleft()
             # if dist > best_dist:
             #     break
-            if dist <= best_dist and (r,c) in in_range and dir_score[d] > dir_score[res]:
+            if dist > best_dist:
+                continue
+            if (r,c) in in_range and dir_score[d] > dir_score[res]:
                 if res != ' ':
                     print('override', r, c, d, dist)
                 # print('override', r, c, d, dist)
@@ -109,8 +111,8 @@ class Unit:
         self.hp -= 3
         if self.hp <= 0:
             self.alive = False
-            self.x = 99999
-            self.y = 99999
+            self.row = 99999
+            self.col = 99999
 
     def attack(self, grid, enemies):
         targets = []
@@ -138,7 +140,12 @@ class Unit:
         #         print(t)
         #     print('low_hp=', low_hp, 'low_enemy=', low_enemy)
         if low_enemy:
+            print('hitting!')
             low_enemy.hit()
+            if low_enemy.hp != low_hp-3:
+                print(f"WTF!")
+        else:
+            print('skipping')    
         
 
 class Elf(Unit):
@@ -148,7 +155,7 @@ class Elf(Unit):
         self.enemy = 'G'
 
     def __repr__(self):
-        return f'Elf: row={self.row}, col={self.col}, hp={self.hp}'
+        return f'Elf: row={self.row}, col={self.col}, hp={self.hp}, alive={self.alive}'
 
 class Goblin(Unit):
     def __init__(self, row, col):
@@ -157,7 +164,7 @@ class Goblin(Unit):
         self.enemy = 'E'
 
     def __repr__(self):
-        return f'Goblin: row={self.row}, col={self.col}, hp={self.hp}'
+        return f'Goblin: row={self.row}, col={self.col}, hp={self.hp}, alive={self.alive}'
 
 def make_grid(cave, units):
     grid = copy.deepcopy(cave)
@@ -209,7 +216,11 @@ units = elves + goblins
 rnd = 0
 done = False
 while not done:
-    for u in sorted(units, key=lambda x: x.sort_key()):
+    ulist = [u for u in sorted(units, key=lambda x: x.sort_key())]
+#    for u in sorted(units, key=lambda x: x.sort_key()):
+    for u in ulist:
+        print(u)
+    for u in ulist:
         num_elves = len([x for x in filter(lambda u: u.alive, elves)])
         num_goblins = len([x for x in filter(lambda u: u.alive, goblins)])
         if num_elves == 0 or num_goblins == 0:
