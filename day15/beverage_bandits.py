@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from sys import argv
 import copy
-from collections import deque
+from collections import deque, defaultdict
 
 class Unit:
     def __init__(self, row, col):
@@ -85,8 +85,8 @@ class Unit:
             if dist > best_dist:
                 continue
             if (r,c) in in_range and dir_score[d] > dir_score[res]:
-                if res != ' ':
-                    print('override', r, c, d, dist)
+                # if res != ' ':
+                #     print('override', r, c, d, dist)
                 # print('override', r, c, d, dist)
                 res = d
                 best_dist = dist
@@ -140,12 +140,12 @@ class Unit:
         #         print(t)
         #     print('low_hp=', low_hp, 'low_enemy=', low_enemy)
         if low_enemy:
-            print('hitting!')
+#             print('hitting!')
             low_enemy.hit()
-            if low_enemy.hp != low_hp-3:
-                print(f"WTF!")
-        else:
-            print('skipping')    
+            # if low_enemy.hp != low_hp-3:
+            #     print(f"WTF!")
+        # else:
+        #     print('skipping')    
         
 
 class Elf(Unit):
@@ -174,9 +174,12 @@ def make_grid(cave, units):
     return grid
 
 def print_grid(cave, units):
+    d = defaultdict(str)
+    for u in sorted(units, key=lambda x: x.sort_key()):
+        d[u.row] += f' {u.sym}({u.hp})'
     grid = make_grid(cave, units)
-    for row in grid:
-        print(row)
+    for r in range(len(grid)):
+        print(grid[r], d[r])
     print()
 
 def score(units, rnd):
@@ -214,12 +217,19 @@ units = elves + goblins
 #     print(u.row, u.col, u.sym)
 
 rnd = 0
+
+num_elves = len([x for x in filter(lambda u: u.alive, elves)])
+num_goblins = len([x for x in filter(lambda u: u.alive, goblins)])
+print('round', rnd, 'num_elves', num_elves, 'num_goblins', num_goblins)
+print_grid(cave, units)
+print()
+
 done = False
 while not done:
     ulist = [u for u in sorted(units, key=lambda x: x.sort_key())]
 #    for u in sorted(units, key=lambda x: x.sort_key()):
-    for u in ulist:
-        print(u)
+    # for u in ulist:
+    #     print(u)
     for u in ulist:
         num_elves = len([x for x in filter(lambda u: u.alive, elves)])
         num_goblins = len([x for x in filter(lambda u: u.alive, goblins)])
