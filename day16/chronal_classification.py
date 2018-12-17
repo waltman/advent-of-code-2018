@@ -2,6 +2,7 @@
 from sys import argv
 import copy
 import re
+from collections import defaultdict
 
 def addr(regs, a, b, c):
     new_regs = copy.deepcopy(regs)
@@ -107,6 +108,7 @@ before = []
 vals = []
 after = []
 state = 1
+pgm = []
 
 with open(filename) as f:
     for line in f:
@@ -128,18 +130,53 @@ with open(filename) as f:
         elif state == 4:
             state = 1
         elif state == 5:
-            pass
+            if re.match('^\d', line):
+                pgm.append([int(x) for x in line.split(' ')])
 
 tot = 0
+tot_possible = 0
 print(len(before))
+possible_opcodes = []
+for _ in range(len(cmds)):
+    possible_opcodes.append(set(list(cmds)))
 for i in range(len(before)):
-    a,b,c = vals[i][1:]
-#    print(a,b,c)
-    cnt = 0
+    op,a,b,c = vals[i][0:]
+    possible = []
     for cmd in cmds:
         r2 = cmd(before[i], a, b, c)
         if r2 == after[i]:
-            cnt += 1
-    if cnt >= 3:
+            possible.append(cmd)
+        else:
+            possible_opcodes[op] -= set([cmd])
+    if len(possible) >= 3:
         tot += 1
 print('part1', tot)
+for i in range(len(possible_opcodes)):
+    print(i, possible_opcodes[i])
+print()
+
+# now let's see if we can trim it down to one possible opcode per number
+only_one = set()
+for i in range(16):
+    for po in possible_opcodes:
+        if len(po) == 1:
+            only_one |= po
+    for po in possible_opcodes:
+        if len(po) > 1:
+            po -= only_one
+for i in range(len(possible_opcodes)):
+    print(i, possible_opcodes[i])
+
+# convert to an array (gotta be an easier way to do this)
+opcode = []
+for po in possible_opcodes:
+    a = [x for x in po]
+    opcode.append(a[0])
+
+# run the program
+regs = [0, 0, 0, 0]
+for instr in pgm:
+    op, a, b, c = instr[0:]
+    r2 = opcode[op](regs, a, b, c)
+    regs = copy.deepcopy(r2)
+print('part2', regs)
