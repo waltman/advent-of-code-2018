@@ -54,6 +54,17 @@ def update_forest(forest):
                 new_forest[row][col] = ' '
     return copy.deepcopy(new_forest)
 
+def value(forest):
+    num_trees = 0
+    num_lumber = 0
+    for row in range(len(forest)):
+        for col in range(len(forest[row])):
+            if forest[row][col] == '|':
+                num_trees += 1
+            elif forest[row][col] == '#':
+                num_lumber += 1
+    return num_trees * num_lumber
+
 # parse input 
 filename = argv[1]
 minutes = int(argv[2])
@@ -73,16 +84,66 @@ orig_forest = copy.deepcopy(forest)
 for min in range(minutes):
     forest = update_forest(forest)
 
-num_trees = 0
-num_lumber = 0
-for row in range(len(forest)):
-    for col in range(len(forest[row])):
-        if forest[row][col] == '|':
-            num_trees += 1
-        elif forest[row][col] == '#':
-            num_lumber += 1
-print('part1', num_trees * num_lumber)
+print('part1', value(forest))
 
-
+# this code looks for a pattern
 # forest = copy.deepcopy(orig_forest)
 # seen = {}
+# for min in range(1000):
+#     forest = update_forest(forest)
+#     val = value(forest)
+#     if val not in seen:
+#         seen[val] = min
+#     print(min, '\t', val, '\t', seen[val])
+
+REP = 523
+# The pattern is that this sequence repeats starting at 495:
+seq = [ 209,
+        468,
+        469,
+        470,
+        471,
+        472,
+        433,
+        474,
+        475,
+        476,
+        477,
+        478,
+        479,
+        480,
+        481,
+        482,
+        208,
+        484,
+        485,
+        486,
+        487,
+        488,
+        489,
+        490,
+        491,
+        464,
+        465,
+        466]
+
+vals = []
+forest = copy.deepcopy(orig_forest)
+# for min in range(1000):
+#     forest = update_forest(forest)
+#     val = value(forest)
+#     if min < REP:
+#         print(min, '\t', val)
+#         vals.append(val)
+#     else:
+#         compval = vals[seq[(min-REP) % len(seq)]]
+# #        print(min, '\t', val, '\t', compval)
+#         if compval != val:
+#             break
+
+for min in range(REP+1):
+    forest = update_forest(forest)
+    vals.append(value(forest))
+
+PART2_MIN = 1000000000-1
+print('part2', vals[seq[(PART2_MIN-REP) % len(seq)]])
