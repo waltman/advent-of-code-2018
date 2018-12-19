@@ -128,3 +128,19 @@ while ip >= 0 and ip < len(pgm):
     regs = copy.deepcopy(r2)
 
 print('part1:', regs[0])
+
+# run the program again with different registers for part2
+# (I bet this is going to take forever...)
+ip = 0
+regs = [0] * 6
+regs[0] = 1
+while ip >= 0 and ip < len(pgm):
+    inst = pgm[ip]
+    f, a, b, c = inst[0:]
+    regs[ipr] = ip
+    r2 = f(regs, a, b, c)
+#    print(f'ip={ip} {regs} {pgms[ip]} {r2}')
+    ip = r2[ipr]+1
+    regs = copy.deepcopy(r2)
+
+print('part2:', regs[0])
