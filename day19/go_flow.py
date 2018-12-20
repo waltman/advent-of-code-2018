@@ -115,19 +115,19 @@ with open(filename) as f:
             pgm.append([cmds[arr[0]], int(arr[1]), int(arr[2]), int(arr[3])])
             pgms.append(line)
 
-# run the program
-ip = 0
-regs = [0] * 6
-while ip >= 0 and ip < len(pgm):
-    inst = pgm[ip]
-    f, a, b, c = inst[0:]
-    regs[ipr] = ip
-    r2 = f(regs, a, b, c)
-#    print(f'ip={ip} {regs} {pgms[ip]} {r2}')
-    ip = r2[ipr]+1
-    regs = copy.deepcopy(r2)
+# # run the program
+# ip = 0
+# regs = [0] * 6
+# while ip >= 0 and ip < len(pgm):
+#     inst = pgm[ip]
+#     f, a, b, c = inst[0:]
+#     regs[ipr] = ip
+#     r2 = f(regs, a, b, c)
+# #    print(f'ip={ip} {regs} {pgms[ip]} {r2}')
+#     ip = r2[ipr]+1
+#     regs = copy.deepcopy(r2)
 
-print('part1:', regs[0])
+# print('part1:', regs[0])
 
 # run the program again with different registers for part2
 # (I bet this is going to take forever...)
