@@ -7,21 +7,29 @@ def build_graph(graph, re, idx, start_row, start_col, cont_idx, matching):
     while True:
         print('looping', idx, re[idx], row, col, cont_idx)
         if re[idx] == 'N':
+            # if f'{row},{col}:{row-1},{col}' in graph:
+            #     break
             graph.add(f'{row},{col}:{row-1},{col}')
             graph.add(f'{row-1},{col}:{row},{col}')
             row -= 1
             idx += 1
         elif re[idx] == 'S':
+            # if f'{row},{col}:{row+1},{col}' in graph:
+            #     break
             graph.add(f'{row},{col}:{row+1},{col}')
             graph.add(f'{row+1},{col}:{row},{col}')
             row += 1
             idx += 1
         elif re[idx] == 'E':
+            # if f'{row},{col}:{row},{col+1}' in graph:
+            #     break
             graph.add(f'{row},{col}:{row},{col+1}')
             graph.add(f'{row},{col+1}:{row},{col}')
             col += 1
             idx += 1
         elif re[idx] == 'W':
+            # if f'{row},{col}:{row},{col-1}' in graph:
+            #     break
             graph.add(f'{row},{col}:{row},{col-1}')
             graph.add(f'{row},{col-1}:{row},{col}')
             col -= 1
@@ -30,7 +38,8 @@ def build_graph(graph, re, idx, start_row, start_col, cont_idx, matching):
             build_graph(graph, re, idx+1, row, col, matching[idx], matching)
             break
         elif re[idx] == '|':
-            build_graph(graph, re, idx+1, start_row, start_col, cont_idx, matching)
+            if re[idx+1] != ')':
+                build_graph(graph, re, idx+1, start_row, start_col, cont_idx, matching)
             idx = cont_idx+1
         elif re[idx] == ')':
             if idx > cont_idx:
