@@ -1,6 +1,58 @@
 #!/usr/bin/env python3
 from sys import argv
 import copy
+import collections
+
+def build_graph2(graph, re, start_row, start_col):
+#    print('in build_graph2', re, start_row, start_col)
+    row, col = start_row, start_col
+    for idx in range(len(re)):
+        if re[idx] == 'N':
+            graph.add(f'{row},{col}:{row-1},{col}')
+            graph.add(f'{row-1},{col}:{row},{col}')
+            row -= 1
+            idx += 1
+        elif re[idx] == 'S':
+            graph.add(f'{row},{col}:{row+1},{col}')
+            graph.add(f'{row+1},{col}:{row},{col}')
+            row += 1
+            idx += 1
+        elif re[idx] == 'E':
+            graph.add(f'{row},{col}:{row},{col+1}')
+            graph.add(f'{row},{col+1}:{row},{col}')
+            col += 1
+            idx += 1
+        elif re[idx] == 'W':
+            graph.add(f'{row},{col}:{row},{col-1}')
+            graph.add(f'{row},{col-1}:{row},{col}')
+            col -= 1
+            idx += 1
+        elif re[idx] == '$':
+            break
+        elif re[idx] == '(':
+            # break into new paths and recurse
+            paths = []
+            level = 0
+            start = idx+1
+            for idx2 in range(idx+1, len(re)):
+                if re[idx2] == '(':
+                    level += 1
+                elif re[idx2] == '|' and level == 0:
+                    paths.append(re[start:idx2])
+                    start = idx2+1
+                elif re[idx2] == ')':
+                    if level == 0:
+                        paths.append(re[start:idx2])
+                        break
+                    else:
+                        level -= 1
+            remaining = re[idx2+1:]
+#            print(paths)
+#            print(remaining)
+            for p in paths:
+                build_graph2(graph, p+remaining, row, col)
+            break
+                    
 
 def build_graph(graph, re, idx, start_row, start_col, cont_idx, matching):
     print('in build_graph', re, idx, start_row, start_col, cont_idx)
@@ -89,7 +141,33 @@ for i in range(len(re)):
         matching[stack.pop()] = i
 
 graph = set()
-build_graph(graph, re, 1, START, START, [len(re)-1], matching)
-print(graph)
+#build_graph(graph, re, 1, START, START, [len(re)-1], matching)
+build_graph2(graph, re, START, START)
+#print(graph)
 
-print_graph(graph, START*2)
+#print_graph(graph, START*2)
+
+# now search for longest path
+q = collections.deque()
+q.append((START, START, 0))
+max_dist = -1
+seen = set()
+print('done parsing map')
+while q:
+    row, col, dist = q.popleft()
+    seen.add((row, col))
+    max_dist = max(dist, max_dist)
+    # N
+    if f'{row},{col}:{row-1},{col}' in graph and (row-1,col) not in seen:
+        q.append((row-1, col, dist+1))
+    # S
+    if f'{row},{col}:{row+1},{col}' in graph and (row+1,col) not in seen:
+        q.append((row+1, col, dist+1))
+    # E
+    if f'{row},{col}:{row},{col+1}' in graph and (row,col+1) not in seen:
+        q.append((row, col+1, dist+1))
+    # W
+    if f'{row},{col}:{row},{col-1}' in graph and (row,col-1) not in seen:
+        q.append((row, col-1, dist+1))
+
+print('part1:', max_dist)
