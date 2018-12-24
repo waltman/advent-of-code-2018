@@ -5,7 +5,11 @@ def build_graph(graph, re, idx, start_row, start_col, cont_idx, matching):
     print('in build_graph', re, idx, start_row, start_col, cont_idx)
     row, col = start_row, start_col
     while True:
-        print('looping', idx, re[idx], row, col, cont_idx)
+        if idx < len(re):
+            print('looping', idx, re[idx], row, col, cont_idx)
+        else:
+            print('looping', idx, 'XX', row, col, cont_idx)
+            return
         if re[idx] == 'N':
             # if f'{row},{col}:{row-1},{col}' in graph:
             #     break
@@ -35,16 +39,14 @@ def build_graph(graph, re, idx, start_row, start_col, cont_idx, matching):
             col -= 1
             idx += 1
         elif re[idx] == '(':
-            build_graph(graph, re, idx+1, row, col, matching[idx], matching)
+            build_graph(graph, re, idx+1, row, col, cont_idx + [matching[idx]], matching)
             break
         elif re[idx] == '|':
             if re[idx+1] != ')':
                 build_graph(graph, re, idx+1, start_row, start_col, cont_idx, matching)
-            idx = cont_idx+1
+            idx = cont_idx.pop() + 1
         elif re[idx] == ')':
-            if idx > cont_idx:
-                break
-            idx = cont_idx+1
+            idx = cont_idx.pop() + 1
         elif re[idx] == '$':
             break
 
@@ -85,7 +87,7 @@ for i in range(len(re)):
         matching[stack.pop()] = i
 
 graph = set()
-build_graph(graph, re, 1, START, START, len(re), matching)
+build_graph(graph, re, 1, START, START, [len(re)-1], matching)
 print(graph)
 
 print_graph(graph, START*2)
