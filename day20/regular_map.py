@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from sys import argv
+import copy
 
 def build_graph(graph, re, idx, start_row, start_col, cont_idx, matching):
     print('in build_graph', re, idx, start_row, start_col, cont_idx)
@@ -42,8 +43,9 @@ def build_graph(graph, re, idx, start_row, start_col, cont_idx, matching):
             build_graph(graph, re, idx+1, row, col, cont_idx + [matching[idx]], matching)
             break
         elif re[idx] == '|':
-            if re[idx+1] != ')':
-                build_graph(graph, re, idx+1, start_row, start_col, cont_idx, matching)
+            # if re[idx+1] != ')':
+            #     build_graph(graph, re, idx+1, start_row, start_col, cont_idx, matching)
+            build_graph(graph, re, idx+1, start_row, start_col, copy.deepcopy(cont_idx), matching)
             idx = cont_idx.pop() + 1
         elif re[idx] == ')':
             idx = cont_idx.pop() + 1
