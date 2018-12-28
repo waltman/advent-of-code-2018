@@ -8,7 +8,6 @@
 #include "util.h"
 
 using namespace std;
-const int NUM_REGS=6;
 bool DEBUG = false;
 
 struct Cmd {

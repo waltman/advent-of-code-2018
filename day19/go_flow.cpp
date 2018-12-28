@@ -99,20 +99,22 @@ int main(int argc, char *argv[]) {
     }
     // run the program
     int ip = 0;
-    long int regs[] = {0, 0, 0, 0, 0, 0};
+    long int regs[] = {1, 0, 0, 0, 0, 0};
     // int ip = 3;
     // long int regs[] = {1,10551330,10551340,3,1,0};
 //    long int regs[] = {1,5275650,10551340,3,2,0};
 //    long int regs[] = {10551341,10551300,10551340,3,10551340,0};
-//    int n = 0;
+    unsigned long int n = 0;
     while (ip >= 0 && ip < (int) pgm.size()) {
         struct Cmd cmd = pgm[ip];
         regs[ipr] = ip;
-        printf("ip=%2d [%ld,%ld,%ld,%ld,%ld,%ld]\t%s", ip, regs[0],regs[1],regs[2],regs[3],regs[4],regs[5], pgms[ip].c_str());
+//        printf("ip=%2d [%ld,%ld,%ld,%ld,%ld,%ld]\t%s", ip, regs[0],regs[1],regs[2],regs[3],regs[4],regs[5], pgms[ip].c_str());
         do_inst(cmd.op, regs, cmd.a, cmd.b, cmd.c);
-        printf("\t[%ld,%ld,%ld,%ld,%ld,%ld]\n", regs[0],regs[1],regs[2],regs[3],regs[4],regs[5]);
+//        printf("\t[%ld,%ld,%ld,%ld,%ld,%ld]\n", regs[0],regs[1],regs[2],regs[3],regs[4],regs[5]);
         ip = regs[ipr] + 1;
-//        n++;
+        n++;
+        if (n % 100000000 == 0)
+            printf("n=%lu ip=%2d [%ld,%ld,%ld,%ld,%ld,%ld]\t%s\n", n, ip, regs[0],regs[1],regs[2],regs[3],regs[4],regs[5], pgms[ip].c_str());
     }
     printf("part1: %ld\n", regs[0]);
     long int sum = 0;
