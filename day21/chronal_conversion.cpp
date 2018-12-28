@@ -100,30 +100,28 @@ int main(int argc, char *argv[]) {
     }
     // run the program
     int ip = 0;
-//    long int regs[] = {103548, 0, 0, 0, 0, 0};
     long int regs[] = {0, 0, 0, 0, 0, 0};
     unsigned long int n = 0;
     set<long int> seen;
+    long int prev = -1;
     while (ip >= 0 && ip < (int) pgm.size()) {
         struct Cmd cmd = pgm[ip];
         regs[ipr] = ip;
-//        printf("ip=%2d [%ld,%ld,%ld,%ld,%ld,%ld]\t%s", ip, regs[0],regs[1],regs[2],regs[3],regs[4],regs[5], pgms[ip].c_str());
         if (ip == 29) {
             long int val = regs[4];
             if (seen.find(val) != seen.end()) {
-                printf("  seen: %ld\n", val);
+                printf("part2: %ld\n", prev);
+                break;
             }
             else {
-                printf("unseen: %ld\n", val);
+                if (seen.size() == 0)
+                    printf("part1: %ld\n", val);
                 seen.insert(val);
+                prev = val;
             }
         }
         do_inst(cmd.op, regs, cmd.a, cmd.b, cmd.c);
-        //       printf("\t[%ld,%ld,%ld,%ld,%ld,%ld]\n", regs[0],regs[1],regs[2],regs[3],regs[4],regs[5]);
         ip = regs[ipr] + 1;
         n++;
-//         if (n % 100000000 == 0)
-//             printf("n=%lu ip=%2d [%ld,%ld,%ld,%ld,%ld,%ld]\t%s\n", n, ip, regs[0],regs[1],regs[2],regs[3],regs[4],regs[5], pgms[ip].c_str());
     }
-    printf("part1: %ld\n", regs[0]);
 }
