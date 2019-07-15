@@ -1,6 +1,23 @@
 #!/usr/bin/env python3
 from sys import argv
 import copy
+from collections import deque
+
+def pick_tool(g1, g2, t):
+    TOOLS = [set(['c','t']),
+             set(['c','n']),
+             set(['t','n'])]
+
+    if g1 == g2:
+        t2 = t
+    else:
+        t2 = list(TOOLS[g2]&TOOLS[g1])[0]
+
+    if t == t2:
+        return t2, 1
+    else:
+        return t2, 8
+
 
 depth, tx, ty = (int(x) for x in argv[1:])
 maxx, maxy = tx+5, ty+5
@@ -69,4 +86,54 @@ for row in geotype[:ty+1]:
     tot += sum(row[:tx+1])
 print('part1', tot)
 
+queue = deque()
+best_mins = (tx+ty) * 7
+queue.append((0, 0, 't', 0))
+seen = {}
+while len(queue) > 0:
+    x, y, tool, mins = queue.popleft()
+    if mins > best_mins:
+        continue
 
+    if x == tx and y == tx:
+        print(x,y,tool,mins)
+        print('at target!')
+        if tool != 't':
+            mins += 7
+        if mins < best_mins:
+            best_mins = mins
+            print('new best of', best_mins)
+        else:
+            print('not new best of', best_mins)
+        continue
+
+    if x > maxx or y > maxy:
+        continue
+
+    if (x,y) in seen and seen[(x,y)] <= mins:
+        continue
+    seen[(x,y)] = mins
+    print(x,y,tool,mins)
+
+    g1 = geotype[x][y]
+    # north
+    if y > 0:
+        t2, delta = pick_tool(g1, geotype[x][y-1], tool)
+        queue.append((x, y-1, t2, mins+delta))
+
+    # east
+    if x < maxx:
+        t2, delta = pick_tool(g1, geotype[x+1][y], tool)
+        queue.append((x+1, y, t2, mins+delta))
+
+    # south
+    if y < maxy:
+        t2, delta = pick_tool(g1, geotype[x][y+1], tool)
+        queue.append((x, y+1, t2, mins+delta))
+
+    # west
+    if x > 0:
+        t2, delta = pick_tool(g1, geotype[x-1][y], tool)
+        queue.append((x-1, y, t2, mins+delta))
+
+print('part2:', best_mins)
