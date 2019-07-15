@@ -48,16 +48,6 @@ for x in range(maxx+1):
     for y in range(maxy+1):
         geotype[x][y] = erosion[x][y] % 3
 
-# print('geoindex')
-# for x in geoindex:
-#     print(x)
-# print('erosion')
-# for x in erosion:
-#     print(x)
-# print('geotype')
-# for x in geotype:
-#     print(x)
-
 print('map')
 terrain = {0: '.', 1: '=', 2: '|'}
 for y in range(maxy+1):
