@@ -35,23 +35,13 @@ for y in range(1, maxy+1):
     erosion[0][y] = (geoindex[0][y] + depth) % 20183
 
 # now fill in the rest
-for tot in range(2, maxx+maxy+1):
-#    print('tot=', tot)
+for y in range(1, maxy+1):
     for x in range(1, maxx+1):
-        y = tot - x
-        if y > maxy:
-            continue
-        if y < 1:
-            break
-#        print('x =', x, 'y =', y)
         if x == tx and y == ty:
             geoindex[x][y] = 0
         else:
             geoindex[x][y] = erosion[x][y-1] * erosion[x-1][y]
         erosion[x][y] = (geoindex[x][y] + depth) % 20183
-
-# erosion at target is a special case
-#erosion[tx][ty] = (geoindex[tx][ty] + depth) % 20183
 
 # calculate geotypes
 for x in range(maxx+1):
@@ -82,8 +72,8 @@ for y in range(maxy+1):
 
 # compute result
 tot = 0
-for row in geotype[:ty+1]:
-    tot += sum(row[:tx+1])
+for row in geotype[:tx+1]:
+    tot += sum(row[:ty+1])
 print('part1', tot)
 
 queue = deque()
