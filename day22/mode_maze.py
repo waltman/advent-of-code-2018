@@ -20,7 +20,7 @@ def pick_tool(g1, g2, t):
 
 
 depth, tx, ty = (int(x) for x in argv[1:])
-maxx, maxy = tx+5, ty+5
+maxx, maxy = tx+25, ty+25
 geoindex = [[0] * (maxy+1) for _ in range(maxx+1)]
 erosion = copy.deepcopy(geoindex)
 geotype = copy.deepcopy(geoindex)
@@ -85,7 +85,7 @@ while len(queue) > 0:
     if mins > best_mins:
         continue
 
-    if x == tx and y == tx:
+    if x == tx and y == ty:
         print(x,y,tool,mins)
         print('at target!')
         if tool != 't':
@@ -100,10 +100,10 @@ while len(queue) > 0:
     if x > maxx or y > maxy:
         continue
 
-    if (x,y) in seen and seen[(x,y)] <= mins:
+    if (x,y, tool) in seen and seen[(x,y, tool)] <= mins:
         continue
-    seen[(x,y)] = mins
-    print(x,y,tool,mins)
+    seen[(x,y,tool)] = mins
+#    print(x,y,tool,mins)
 
     g1 = geotype[x][y]
     # north
