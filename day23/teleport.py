@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from sys import argv
 import re
+from queue import PriorityQueue
 
 def l1_dist(p1, p2):
     return abs(p1[0]-p2[0]) + abs(p1[1]-p2[1]) + abs(p1[2]-p2[2])
@@ -35,3 +36,23 @@ for nb_pos in nanobot_pos:
         in_range += 1
 
 print('part1', in_range)
+
+q = PriorityQueue()
+for i in range(len(nanobot_pos)):
+    x,y,z = nanobot_pos[i]
+    r = nanobot_r[i]
+    d = abs(x) + abs(y) + abs(z)
+    q.put((max(0, d - r),1))
+    q.put((d + r + 1,-1))
+
+count = 0
+maxCount = 0
+result = 0
+while not q.empty():
+    dist,e = q.get()
+    count += e
+    if count > maxCount:
+        result = dist
+        maxCount = count
+
+print('part2', result)
